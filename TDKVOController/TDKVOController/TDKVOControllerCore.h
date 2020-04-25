@@ -42,7 +42,8 @@ typedef void (^TDKVONotificationBlock)(id _Nullable observer, id object, NSDicti
 
 #pragma mark - Observe
 /**
- Register observer for key-path change notification of specified object.
+ Register observer for key-path change notification of specified object, with default options of `NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld |  NSKeyValueObservingOptionInitial`.
+
  @param keyPath The key-value to observe.
  @param object The object to observe.
  @param block The callback block of key-path change notification.
@@ -50,12 +51,34 @@ typedef void (^TDKVONotificationBlock)(id _Nullable observer, id object, NSDicti
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object block:(TDKVONotificationBlock)block;
 
 /**
- Register observer for a set of key-path change notification of specified object.
+ Register observer for key-path change notification of specified object, with specified options of `NSKeyValueObservingOptions`.
+ 
+ @param keyPath The key-value to observe.
+ @param object The object to observe.
+ @param options The observing options.
+ @param block The callback block of key-path change notification.
+ */
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object options:(NSKeyValueObservingOptions)options block:(TDKVONotificationBlock)block;
+
+/**
+ Register observer for a set of key-path change notification of specified object, with default options of `NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld |  NSKeyValueObservingOptionInitial`.
+ 
  @param keyPaths The key-values to observe.
  @param object The object to observe.
  @param block The callback block of key-path change notification.
  */
 - (void)observeValueForKeyPaths:(NSArray<NSString *> *)keyPaths ofObject:(id)object block:(TDKVONotificationBlock)block;
+
+/**
+ Register observer for key-path change notification of specified object, with specified options of `NSKeyValueObservingOptions`.
+ 
+ @param keyPaths The key-values to observe.
+ @param object The object to observe.
+ @param options The observing options.
+ @param block The callback block of key-path change notification.
+ */
+- (void)observeValueForKeyPaths:(NSArray<NSString *> *)keyPaths ofObject:(id)object options:(NSKeyValueObservingOptions)options block:(TDKVONotificationBlock)block;
+
 
 #pragma mark - Unobserve
 /**

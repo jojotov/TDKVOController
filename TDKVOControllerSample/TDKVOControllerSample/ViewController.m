@@ -66,6 +66,8 @@
 
 @interface ViewController ()
 @property (weak, nonatomic) IBOutlet UIButton *titleButton;
+@property (weak, nonatomic) IBOutlet UILabel *oldValueLabel;
+@property (weak, nonatomic) IBOutlet UILabel *newerValueLabel;
 @property (nonatomic, strong) TDKVOControllerSampleViewModel *viewModel;
 @end
 
@@ -78,6 +80,9 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    self.titleButton.layer.masksToBounds = YES;
+    self.titleButton.layer.cornerRadius = 8.f;
+    
     self.viewModel = [TDKVOControllerSampleViewModel new];
     
     __weak __typeof(self) weakSelf = self;
@@ -86,7 +91,21 @@
         NSAttributedString *newValue = change[NSKeyValueChangeNewKey];
         [weakSelf.titleButton setAttributedTitle:newValue forState:UIControlStateNormal];
     }];
+    
+    [self.oldValueLabel.td_KVOController observeValueForKeyPaths:@[@"attributedTitle"] ofObject:self.viewModel options:NSKeyValueObservingOptionOld block:^(UILabel *label, id  _Nonnull object, NSDictionary<NSKeyValueChangeKey,id> * _Nonnull change) {
+        NSAttributedString *oldValue = change[NSKeyValueChangeOldKey];
+        if (oldValue) {
+            label.attributedText = [weakSelf oldValueAttributedString:oldValue];
+        }
+    }];
 
+    [self.newerValueLabel.td_KVOController observeValueForKeyPaths:@[@"attributedTitle"] ofObject:self.viewModel options:NSKeyValueObservingOptionNew block:^(UILabel *label, id  _Nonnull object, NSDictionary<NSKeyValueChangeKey,id> * _Nonnull change) {
+        NSAttributedString *newValue = change[NSKeyValueChangeNewKey];
+        if (newValue) {
+            label.attributedText = [weakSelf newerValueAttributedString:newValue];
+        }
+    }];
+    
     TDKVOControllerSampleModel *model = [TDKVOControllerSampleModel new];
     self.viewModel.model = model;
 }
@@ -96,5 +115,21 @@
     self.viewModel.model.name = names[(rand() % 5)];
 }
 
+- (NSAttributedString *)newerValueAttributedString:(NSAttributedString *)string {
+    NSMutableAttributedString *result = [[NSMutableAttributedString alloc] initWithString:@"New value: " attributes:@{
+        NSForegroundColorAttributeName: [UIColor lightGrayColor],
+        NSFontAttributeName: [UIFont italicSystemFontOfSize:18.f]
+    }];
+    [result appendAttributedString:string];
+    return result.copy;
+}
 
+- (NSAttributedString *)oldValueAttributedString:(NSAttributedString *)string {
+    NSMutableAttributedString *result = [[NSMutableAttributedString alloc] initWithString:@"Old value: " attributes:@{
+        NSForegroundColorAttributeName: [UIColor lightGrayColor],
+        NSFontAttributeName: [UIFont italicSystemFontOfSize:18.f]
+    }];
+    [result appendAttributedString:string];
+    return result.copy;
+}
 @end

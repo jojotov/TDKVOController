@@ -75,8 +75,9 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="NC7-i9-tnk">
-                                <rect key="frame" x="20" y="413" width="374" height="71"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="NC7-i9-tnk">
+                                <rect key="frame" x="20" y="439.5" width="374" height="71"/>
+                                <color key="backgroundColor" systemColor="systemFillColor" red="0.47058823529999999" green="0.47058823529999999" blue="0.50196078430000002" alpha="0.20000000000000001" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="71" id="aLg-j0-Kwt"/>
                                 </constraints>
@@ -85,10 +86,30 @@
                                     <action selector="clickAction:" destination="BYZ-38-t0r" eventType="touchUpInside" id="ZHx-LK-ssL"/>
                                 </connections>
                             </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rEF-ie-bsF">
+                                <rect key="frame" x="20" y="408.5" width="374" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jKS-40-eid">
+                                <rect key="frame" x="20" y="520.5" width="374" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
+                            <constraint firstItem="rEF-ie-bsF" firstAttribute="trailing" secondItem="NC7-i9-tnk" secondAttribute="trailing" id="09o-dV-uuB"/>
+                            <constraint firstItem="NC7-i9-tnk" firstAttribute="top" secondItem="rEF-ie-bsF" secondAttribute="bottom" constant="10" id="46D-6g-ckW"/>
+                            <constraint firstItem="jKS-40-eid" firstAttribute="top" secondItem="NC7-i9-tnk" secondAttribute="bottom" constant="10" id="Caz-2o-P4W"/>
                             <constraint firstItem="NC7-i9-tnk" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="DEc-62-8nN"/>
+                            <constraint firstItem="jKS-40-eid" firstAttribute="trailing" secondItem="NC7-i9-tnk" secondAttribute="trailing" id="EMA-pg-ylo"/>
+                            <constraint firstItem="rEF-ie-bsF" firstAttribute="leading" secondItem="NC7-i9-tnk" secondAttribute="leading" id="Eox-y4-zlg"/>
+                            <constraint firstItem="rEF-ie-bsF" firstAttribute="height" secondItem="NC7-i9-tnk" secondAttribute="height" multiplier="0.295775" id="G0Y-ql-ZpX"/>
+                            <constraint firstItem="jKS-40-eid" firstAttribute="height" secondItem="NC7-i9-tnk" secondAttribute="height" multiplier="0.295775" id="K2W-a8-AIm"/>
+                            <constraint firstItem="jKS-40-eid" firstAttribute="leading" secondItem="NC7-i9-tnk" secondAttribute="leading" id="Nbn-x1-pWr"/>
                             <constraint firstItem="NC7-i9-tnk" firstAttribute="centerY" secondItem="6Tk-OE-BBY" secondAttribute="centerY" id="cBl-ut-XCH"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="NC7-i9-tnk" secondAttribute="trailing" constant="20" id="dCR-Ne-FxI"/>
                             <constraint firstItem="NC7-i9-tnk" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="w1t-wV-r4I"/>
@@ -97,6 +118,8 @@
                     </view>
                     <navigationItem key="navigationItem" id="Emr-rz-gFp"/>
                     <connections>
+                        <outlet property="newerValueLabel" destination="jKS-40-eid" id="pbI-L6-67p"/>
+                        <outlet property="oldValueLabel" destination="rEF-ie-bsF" id="vlT-zT-EbG"/>
                         <outlet property="titleButton" destination="NC7-i9-tnk" id="YxI-Q1-Vjk"/>
                     </connections>
                 </viewController>

@@ -9,6 +9,11 @@
 #import "TDKVOControllerCore.h"
 #import <objc/runtime.h>
 
+static NSKeyValueObservingOptions TDDefaultKVOOptions =
+NSKeyValueObservingOptionNew |
+NSKeyValueObservingOptionOld |
+NSKeyValueObservingOptionInitial;
+
 #pragma mark - Utilities
 NSArray<NSString *> *td_MethodNamesOfClass(Class cls) {
     unsigned int count = 0;
@@ -46,6 +51,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, weak  ) id                     target;
 @property (nonatomic, strong) NSString               *keyPath;
 @property (nonatomic, copy  ) TDKVONotificationBlock block;
+@property (nonatomic, assign) NSKeyValueObservingOptions options;
 
 + (instancetype)KVOItemWithKeyPath:(NSString *)keyPath
                           ofTarget:(id)target
@@ -87,6 +93,7 @@ NS_ASSUME_NONNULL_END
         _block = block;
         _target = target;
         _keyPath = keyPath;
+        _options = TDDefaultKVOOptions;
     }
     return self;
 }
@@ -124,10 +131,6 @@ NS_ASSUME_NONNULL_END
 
 static NSString *TDKVOSharedControllerLockName = @"TDKVOSharedControllerLock";
 static TDKVOSharedController *sharedController = nil;
-static NSKeyValueObservingOptions TDKVOOptions =
-NSKeyValueObservingOptionNew |
-NSKeyValueObservingOptionOld |
-NSKeyValueObservingOptionInitial;
 
 @implementation TDKVOSharedController {
     NSHashTable<TDKVOItem *> *_items;
@@ -173,7 +176,7 @@ NSKeyValueObservingOptionInitial;
     
     [item.target addObserver:self
                   forKeyPath:item.keyPath
-                     options:TDKVOOptions
+                     options:item.options
                      context:(__bridge void *__nullable)(item)];
 }
 
@@ -240,8 +243,8 @@ NSKeyValueObservingOptionInitial;
 
 #pragma mark - TDKVOController
 
-NSString *const TDKVONotificationKeyPathKey = @"TDKVONotificationKeyPathKey";
-static NSString *TDKVOControllerLockName = @"TDKVOControllerLock";
+NSString *const TDKVONotificationKeyPathKey = @"com.TDKVOController.notification";
+static NSString *const TDKVOControllerLockName = @"com.TDKVOController.lock";
 
 @interface TDKVOController ()
 
@@ -276,11 +279,19 @@ static NSString *TDKVOControllerLockName = @"TDKVOControllerLock";
 
 #pragma mark - Public
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object block:(TDKVONotificationBlock)block {
-    [self _observeValueForKeyPath:keyPath ofObject:object block:block];
+    [self _observeValueForKeyPath:keyPath ofObject:object options:TDDefaultKVOOptions block:block];
 }
 
 - (void)observeValueForKeyPaths:(NSArray<NSString *> *)keyPaths ofObject:(id)object block:(TDKVONotificationBlock)block {
-    [self _observeValueForKeyPaths:keyPaths ofObject:object block:block];
+    [self _observeValueForKeyPaths:keyPaths ofObject:object options:TDDefaultKVOOptions block:block];
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object options:(NSKeyValueObservingOptions)options block:(TDKVONotificationBlock)block {
+    [self _observeValueForKeyPath:keyPath ofObject:object options:TDDefaultKVOOptions block:block];
+}
+
+- (void)observeValueForKeyPaths:(NSArray<NSString *> *)keyPaths ofObject:(id)object options:(NSKeyValueObservingOptions)options block:(TDKVONotificationBlock)block {
+    [self _observeValueForKeyPaths:keyPaths ofObject:object options:options block:block];
 }
 
 - (void)unobserveKeyPath:(NSString *)keyPath ofObject:(id)object {
@@ -296,14 +307,17 @@ static NSString *TDKVOControllerLockName = @"TDKVOControllerLock";
 }
 
 #pragma mark - Private
-- (TDKVOItem *)_observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object block:(nonnull TDKVONotificationBlock)block{
-    return [self addKVOItem:[TDKVOItem KVOItemWithKeyPath:keyPath ofTarget:object controller:self block:block]];;
+- (TDKVOItem *)_observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object options:(NSKeyValueObservingOptions)options block:(nonnull TDKVONotificationBlock)block{
+    TDKVOItem *item = [TDKVOItem KVOItemWithKeyPath:keyPath ofTarget:object controller:self block:block];
+    item.options = options;
+    return [self addKVOItem:item];
 }
 
-- (NSMutableSet<TDKVOItem *> *)_observeValueForKeyPaths:(NSArray<NSString *> *)keyPaths ofObject:(id)object block:(nonnull TDKVONotificationBlock)block{
+
+- (NSMutableSet<TDKVOItem *> *)_observeValueForKeyPaths:(NSArray<NSString *> *)keyPaths ofObject:(id)object options:(NSKeyValueObservingOptions)options block:(nonnull TDKVONotificationBlock)block{
     NSMutableSet<TDKVOItem *> *items = [NSMutableSet setWithCapacity:keyPaths.count];
     [keyPaths enumerateObjectsUsingBlock:^(NSString * _Nonnull keyPath, NSUInteger idx, BOOL * _Nonnull stop) {
-        TDKVOItem *item = [self _observeValueForKeyPath:keyPath ofObject:object block:block];
+        TDKVOItem *item = [self _observeValueForKeyPath:keyPath ofObject:object options:options block:block];
         if (item) {
             [items addObject:item];
         }
