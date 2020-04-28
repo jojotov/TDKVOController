@@ -11,7 +11,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 /**
- Provided in the @c chang dictionary of @c TDKVONotificationBlock, and value represents the key-path being observed.
+ Provided in the @c change dictionary of @c TDKVONotificationBlock, and value represents the key-path being observed.
  */
 extern NSString *const TDKVONotificationKeyPathKey;
 
